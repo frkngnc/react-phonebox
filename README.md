@@ -1,5 +1,5 @@
 # 📱 React PhoneBox
-
+[![npm version](https://img.shields.io/npm/v/react-phonebox.svg)](https://www.npmjs.com/package/react-phonebox)
 A lightweight, customizable, and i18n-ready phone number input component with country selection, flag icons, validation, and formatting — powered by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js).
 
 ## ✨ Features
