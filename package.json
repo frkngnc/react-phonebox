@@ -2,7 +2,7 @@
   "name": "react-phonebox",
   "version": "1.0.0",
   "author": "Furkan Genc",
-  "description": "A customizable phone input component with i18n support.",
+  "description": "A customizable phone input component with built-in multi-language support.",
   "repository": {
     "type": "git",
     "url": "https://github.com/frkngnc/react-phonebox.git"
