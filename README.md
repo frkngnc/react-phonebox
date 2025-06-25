@@ -29,12 +29,13 @@ import "react-phonebox/dist/PhoneBox.css";
 
 function App() {
   const [phone, setPhone] = useState("");
+  const [rawPhone, setRawPhone] = useState("");
 
   return (
     <PhoneBox
       value={phone}
       onChange={(val) => setPhone(val)}
-      onRawChange={(rawVal) => setRaw(rawVal)}
+      onRawChange={(rawVal) => setRawPhone(rawVal)}
       locale="en"
     />
   );
