@@ -35,9 +35,6 @@ function App() {
       onChange={(val) => setPhone(val)}
       onRawChange={(rawVal) => setRaw(rawVal)}
       locale="en"
-      initialCountry="us"
-      onValidityChange={(isValid) => console.log("Valid:", isValid)}
-      onCountryChange={(country) => console.log("Country:", country)}
     />
   );
 }
@@ -54,6 +51,8 @@ function App() {
 | `initialCountry`   | `string`                     | ISO 3166-1 alpha-2 country code (e.g. `tr`, `us`)                |
 | `onCountryChange`  | `(country: Country) => void` | Returns selected country object                                  |
 | `onValidityChange` | `(valid: boolean) => void`   | Returns whether current phone is valid                           |
+| `searchPlaceholder`| `string`                     | Placeholder text for the country search input                    |
+
 
 ## 🌐 Languages Supported
 
@@ -81,4 +80,4 @@ MIT
 
 Check out the live demo: [react-phonebox demo](https://react-phonebox-demo.vercel.app)
 
-> Developed with ❤️ by [frkngnc](https://github.com/frkngnc)
+> Developed with 🎉​ by [frkngnc](https://github.com/frkngnc)

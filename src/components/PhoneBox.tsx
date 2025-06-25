@@ -39,6 +39,7 @@ type PhoneBoxProps = {
   onValidityChange?: (isValid: boolean) => void;
   initialCountry?: string;
   onRawChange?: (raw: string) => void;
+  searchPlaceholder?: string;
 };
 
 export const PhoneBox: React.FC<PhoneBoxProps> = ({
@@ -49,6 +50,7 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
   onValidityChange,
   initialCountry,
   onRawChange,
+  searchPlaceholder = "Search country",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [countries, setCountries] = useState<Country[]>([]);
@@ -179,7 +181,7 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search country"
+            placeholder={searchPlaceholder}
             className="phonebox-search"
           />
 
