@@ -22,8 +22,9 @@ yarn add react-phonebox
 ## 🔧 Usage
 
 ```tsx
-import { PhoneBox } from "react-phonebox";
 import { useState } from "react";
+import { PhoneBox } from "react-phonebox";
+import "react-phonebox/dist/PhoneBox.css";
 
 function App() {
   const [phone, setPhone] = useState("");
@@ -32,6 +33,7 @@ function App() {
     <PhoneBox
       value={phone}
       onChange={(val) => setPhone(val)}
+      onRawChange={(rawVal) => setRaw(rawVal)}
       locale="en"
       initialCountry="us"
       onValidityChange={(isValid) => console.log("Valid:", isValid)}
@@ -43,14 +45,15 @@ function App() {
 
 ## 🧪 Props
 
-| Prop              | Type                          | Description                                               |
-|-------------------|-------------------------------|-----------------------------------------------------------|
-| `value`           | `string`                      | Current phone number value                                |
-| `onChange`        | `(value: string) => void`     | Triggered on input change                                 |
-| `locale`          | `string`                      | Language key (`en`, `tr`, `fr`, etc.)                     |
-| `initialCountry`  | `string`                      | ISO 3166-1 alpha-2 country code (e.g. `tr`, `us`)         |
-| `onCountryChange` | `(country: Country) => void`  | Returns selected country object                           |
-| `onValidityChange`| `(valid: boolean) => void`    | Returns whether current phone is valid                    |
+| Prop               | Type                         | Description                                                      |
+| ------------------ | ---------------------------- | ---------------------------------------------------------------- |
+| `value`            | `string`                     | Current phone number value                                       |
+| `onChange`         | `(value: string) => void`    | Triggered on input change                                        |
+| `onRawChange`      | `(raw: string) => void`      | Triggered on input change (raw numeric value without formatting) |
+| `locale`           | `string`                     | Language key (`en`, `tr`, `fr`, etc.)                            |
+| `initialCountry`   | `string`                     | ISO 3166-1 alpha-2 country code (e.g. `tr`, `us`)                |
+| `onCountryChange`  | `(country: Country) => void` | Returns selected country object                                  |
+| `onValidityChange` | `(valid: boolean) => void`   | Returns whether current phone is valid                           |
 
 ## 🌐 Languages Supported
 
@@ -76,7 +79,6 @@ MIT
 
 ## 🔗 Live Demo
 
-Check out the live demo: [react-phonebox demo](https://frkngnc.github.io/react-phonebox/)
-
+Check out the live demo: [react-phonebox demo](https://react-phonebox-demo.vercel.app)
 
 > Developed with ❤️ by [frkngnc](https://github.com/frkngnc)
