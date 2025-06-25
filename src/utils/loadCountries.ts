@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import metadata from "libphonenumber-js/metadata.full.json";
+import metadata from "libphonenumber-js/metadata.min.json";
 import { getCountryCallingCode } from "libphonenumber-js";
 
 export type Country = {

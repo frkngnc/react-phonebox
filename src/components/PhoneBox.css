@@ -20,6 +20,8 @@
   padding: 4px 8px;
   cursor: pointer;
   border-right: 1px solid #8c8c8c;
+  background: #1f1f1f;
+  color: white;
 }
 
 .phonebox-dialcode {
@@ -40,6 +42,7 @@
   font-size: 16px;
   padding: 0 12px;
   background: #1f1f1f;
+  color: white;
 }
 
 .phonebox-dropdown {
@@ -115,7 +118,6 @@
 .phonebox-option-dialcode {
   color: #8c8c8c;
 }
-
 
 .phonebox-wrapper.rtl {
   direction: rtl;

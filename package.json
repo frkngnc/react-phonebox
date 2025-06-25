@@ -1,6 +1,6 @@
 {
   "name": "react-phonebox",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": "Furkan Genc",
   "description": "A customizable phone input component with built-in multi-language support.",
   "repository": {
