@@ -1,0 +1,136 @@
+.phonebox-wrapper {
+  position: relative;
+  overflow: visible !important;
+  z-index: 1;
+}
+
+.phonebox-input {
+  display: flex;
+  border: 1px solid #8c8c8c;
+  border-radius: 5px;
+  overflow: hidden;
+  height: 48px;
+}
+
+.phonebox-select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-right: 1px solid #8c8c8c;
+}
+
+.phonebox-dialcode {
+  font-weight: 500;
+  font-size: 16px;
+  color: white;
+}
+
+.phonebox-caret {
+  margin: 5px 2px 0 2px;
+  color: white;
+}
+
+.phonebox-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 0 12px;
+  background: #1f1f1f;
+}
+
+.phonebox-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #1f1f1f;
+  border: 1px solid #8c8c8c;
+  border-radius: 6px;
+  margin-top: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 8px 8px 0 8px;
+}
+.phonebox-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.phonebox-dropdown::-webkit-scrollbar-thumb {
+  background-color: #a7a7a9;
+  border-radius: 4px;
+}
+
+.phonebox-dropdown::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.phonebox-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #8c8c8c;
+  border-radius: 6px;
+  background: #1f1f1f;
+  z-index: 1;
+  color: white;
+}
+
+.phonebox-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+  color: white;
+  overflow-x: hidden;
+  font-size: 12px;
+}
+.phonebox-options-scroll {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 8px;
+  padding-right: 4px;
+}
+
+.phonebox-options-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.phonebox-options-scroll::-webkit-scrollbar-thumb {
+  background-color: #a7a7a9;
+  border-radius: 4px;
+}
+
+.phonebox-option:hover {
+  background-color: #393a3d;
+}
+
+.phonebox-option-dialcode {
+  color: #8c8c8c;
+}
+
+
+.phonebox-wrapper.rtl {
+  direction: rtl;
+}
+
+.phonebox-wrapper.rtl .phonebox-input {
+  flex-direction: row-reverse;
+}
+
+.phonebox-wrapper.rtl .phonebox-select {
+  border-left: 1px solid #8c8c8c;
+  border-right: none;
+}
+
+.phonebox-wrapper.rtl .phonebox-caret {
+  margin-left: 0;
+  margin-right: 4px;
+}
