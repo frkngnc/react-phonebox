@@ -74,4 +74,4 @@ MIT
 
 ---
 
-> Developed with ❤️ by [Furkan Genc](https://github.com/frkngnc)
+> Developed with ❤️ by [frkngnc](https://github.com/frkngnc)
