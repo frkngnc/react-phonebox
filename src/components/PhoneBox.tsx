@@ -109,6 +109,7 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
 
   const handleInputChange = (inputValue: string) => {
     if (!selectedCountry) return;
+
     const formatter = new AsYouType(
       selectedCountry.iso2.toUpperCase() as CountryCode
     );
@@ -120,16 +121,20 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
       examples
     );
     const maxLength = example?.nationalNumber?.length || 15;
+    const currentLength = formatter.getNationalNumber().length;
 
-    if (formatter.getNationalNumber().length <= maxLength) {
-      const valid = isValidPhoneNumber(
-        raw,
-        selectedCountry.iso2.toUpperCase() as CountryCode
-      );
-      setIsValid(valid);
-      onChange(formatted);
-      onRawChange?.(raw);
+    if (currentLength > maxLength) {
+      return;
     }
+
+    onChange(formatted);
+    onRawChange?.(raw);
+
+    const valid = isValidPhoneNumber(
+      raw,
+      selectedCountry.iso2.toUpperCase() as CountryCode
+    );
+    setIsValid(valid);
   };
 
   const placeholder = useMemo(() => {
