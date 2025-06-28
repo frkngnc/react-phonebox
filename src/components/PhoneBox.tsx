@@ -30,6 +30,10 @@ const debounce = <F extends (...args: any[]) => void>(
   };
 };
 
+const trunkPrefixCountries = new Set([
+  "TR",
+]);
+
 type PhoneBoxProps = {
   value: string;
   onChange: (value: string) => void;
@@ -136,12 +140,23 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
 
   const handleInputChange = (inputValue: string) => {
     if (!selectedCountry) return;
+
+    let inputDigits = inputValue.replace(/\D/g, "");
+
+    if (trunkPrefixCountries.has(selectedCountry.iso2.toUpperCase())) {
+      if (inputDigits.startsWith("0")) {
+        inputDigits = inputDigits.substring(1);
+      }
+    }
+
     const formatter = new AsYouType(selectedCountry.iso2.toUpperCase() as CountryCode);
     const example = getExampleNumber(selectedCountry.iso2.toUpperCase() as CountryCode, examples);
     const maxDigits = example?.nationalNumber?.replace(/\D/g, "").length ?? 15;
-    const inputDigits = inputValue.replace(/\D/g, "").slice(0, maxDigits);
+    inputDigits = inputDigits.slice(0, maxDigits);
+
     const formatted = formatter.input(inputDigits);
     onChange(formatted);
+
     const phoneNumber = formatter.getNumber();
     if (phoneNumber) {
       onRawChange?.(phoneNumber.number);
