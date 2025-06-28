@@ -56,7 +56,7 @@ function App() {
 | `onValidityChange` | `(valid: boolean) => void`   | Returns whether current phone is valid                                                    |
 | `searchPlaceholder`| `string`                     | Placeholder text for the country search input                                             |
 | `mask`             | `"exampleNumber"`            | Accepts only special characters like `*`, `-`, `.`, etc., or the string `"exampleNumber"` |
-| `theme`            | `string`                    | dark & light                                                                              | 
+| `theme`            | `string`                     | dark & light                                                                               | 
 
 
 ## 🌐 Languages Supported
