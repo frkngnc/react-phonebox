@@ -8,9 +8,11 @@ A lightweight, customizable, and i18n-ready phone number input component with co
 - 🌍 Locale-based country names (supports `en`, `tr`, `fr`, `de`, `ar`, `es`, `ur`, etc.)
 - 📞 Auto-formats and validates numbers using libphonenumber-js
 - 🇺🇳 Flag icons from [flagcdn.com](https://flagcdn.com)
-- 🔍 Debounced country search
-- 😦 Validity feedback
+- 🔍 Debounced country search with intelligent filtering
+- 😦 Validity feedback via callback
+- 🌓 Light & Dark theme support via `theme` prop
 - 💡 Built-in RTL support
+- ✨ Customizable input mask formatting (single char mask like `*`, `-`, `.` or example number mask)
 
 ## 🚀 Installation
 
@@ -20,7 +22,7 @@ npm install react-phonebox
 yarn add react-phonebox
 ```
 
-## 🔧 Usage
+## 🔧 Basic Usage
 
 ```tsx
 import { useState } from "react";
@@ -34,9 +36,8 @@ function App() {
   return (
     <PhoneBox
       value={phone}
-      onChange={(val) => setPhone(val)}
-      onRawChange={(rawVal) => setRawPhone(rawVal)}
-      locale="en"
+      onChange={setPhone}
+      onRawChange={setRawPhone}
     />
   );
 }
@@ -44,16 +45,18 @@ function App() {
 
 ## 🧪 Props
 
-| Prop               | Type                         | Description                                                      |
-| ------------------ | ---------------------------- | ---------------------------------------------------------------- |
-| `value`            | `string`                     | Current phone number value                                       |
-| `onChange`         | `(value: string) => void`    | Triggered on input change                                        |
-| `onRawChange`      | `(raw: string) => void`      | Triggered on input change (raw numeric value without formatting) |
-| `locale`           | `string`                     | Language key (`en`, `tr`, `fr`, etc.)                            |
-| `initialCountry`   | `string`                     | ISO 3166-1 alpha-2 country code (e.g. `tr`, `us`)                |
-| `onCountryChange`  | `(country: Country) => void` | Returns selected country object                                  |
-| `onValidityChange` | `(valid: boolean) => void`   | Returns whether current phone is valid                           |
-| `searchPlaceholder`| `string`                     | Placeholder text for the country search input                    |
+| Prop               | Type                         | Description                                                                               |
+| ------------------ | ---------------------------- | ------------------------------------------------------------------------------------------|
+| `value`            | `string`                     | Current phone number value                                                                |
+| `onChange`         | `(value: string) => void`    | Triggered on input change                                                                 |
+| `onRawChange`      | `(raw: string) => void`      | Triggered on input change (raw numeric value without formatting)                          |
+| `locale`           | `string`                     | Language key (`en`, `tr`, `fr`, etc.)                                                     |
+| `initialCountry`   | `string`                     | ISO 3166-1 alpha-2 country code (e.g. `tr`, `us`)                                         |
+| `onCountryChange`  | `(country: Country) => void` | Returns selected country object                                                           |
+| `onValidityChange` | `(valid: boolean) => void`   | Returns whether current phone is valid                                                    |
+| `searchPlaceholder`| `string`                     | Placeholder text for the country search input                                             |
+| `mask`             | `"exampleNumber"`            | Accepts only special characters like `*`, `-`, `.`, etc., or the string `"exampleNumber"` |
+| `theme`            | `string"`                    | dark & light                                                                              | 
 
 
 ## 🌐 Languages Supported
@@ -70,7 +73,9 @@ Currently includes static JSON translations for:
 
 ## 🧱 Styling
 
-Basic styles are included via `PhoneBox.css`. You can customize it or override styles via your own stylesheet.
+Basic styles are included via `PhoneBox.css`. Supports both dark and light themes via theme prop.
+You can customize or override styles by importing your own CSS and/or overriding CSS variables.. 
+
 
 ## 🛆 License
 
