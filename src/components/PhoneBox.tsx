@@ -30,9 +30,7 @@ const debounce = <F extends (...args: any[]) => void>(
   };
 };
 
-const trunkPrefixCountries = new Set([
-  "TR",
-]);
+const trunkPrefixCountries = new Set(["TR"]);
 
 type PhoneBoxProps = {
   value: string;
@@ -67,6 +65,16 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
   const [isValid, setIsValid] = useState(true);
   const [isRTL, setIsRTL] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const example = useMemo(() => {
+    if (!selectedCountry) return undefined;
+    return getExampleNumber(selectedCountry.iso2.toUpperCase() as CountryCode, examples);
+  }, [selectedCountry]);
+
+  const formatter = useMemo(() => {
+    if (!selectedCountry) return null;
+    return new AsYouType(selectedCountry.iso2.toUpperCase() as CountryCode);
+  }, [selectedCountry]);
 
   useEffect(() => {
     const handler = debounce((val: string) => {
@@ -139,7 +147,7 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
   };
 
   const handleInputChange = (inputValue: string) => {
-    if (!selectedCountry) return;
+    if (!selectedCountry || !formatter) return;
 
     let inputDigits = inputValue.replace(/\D/g, "");
 
@@ -149,11 +157,10 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
       }
     }
 
-    const formatter = new AsYouType(selectedCountry.iso2.toUpperCase() as CountryCode);
-    const example = getExampleNumber(selectedCountry.iso2.toUpperCase() as CountryCode, examples);
     const maxDigits = example?.nationalNumber?.replace(/\D/g, "").length ?? 15;
     inputDigits = inputDigits.slice(0, maxDigits);
 
+    formatter.reset();
     const formatted = formatter.input(inputDigits);
     onChange(formatted);
 
@@ -168,8 +175,6 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
   };
 
   const placeholder = useMemo(() => {
-    if (!selectedCountry) return "";
-    const example = getExampleNumber(selectedCountry.iso2.toUpperCase() as CountryCode, examples);
     if (!example?.nationalNumber) return "";
     const nationalFormat = example.formatNational();
     if (mask === "exampleNumber") return nationalFormat;
@@ -177,7 +182,7 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
       return nationalFormat.replace(/\d/g, mask);
     }
     return nationalFormat;
-  }, [selectedCountry, mask]);
+  }, [example, mask]);
 
   return (
     <div
