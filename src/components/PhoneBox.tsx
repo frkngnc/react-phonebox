@@ -4,8 +4,9 @@ import { loadCountries } from "../utils/loadCountries";
 import {
   AsYouType,
   getExampleNumber,
-  CountryCode
-} from "libphonenumber-js";
+  parsePhoneNumberFromString,
+  CountryCode,
+} from "libphonenumber-js/max";
 import examples from "libphonenumber-js/examples.mobile.json";
 import "./PhoneBox.css";
 
@@ -43,6 +44,7 @@ type PhoneBoxProps = {
   searchPlaceholder?: string;
   mask?: "exampleNumber" | string;
   theme?: "dark" | "light";
+  mobileOnly?: boolean;
 };
 
 export const PhoneBox: React.FC<PhoneBoxProps> = ({
@@ -55,7 +57,8 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
   onRawChange,
   searchPlaceholder = "Search country",
   mask = "_",
-  theme = "dark"
+  theme = "dark",
+  mobileOnly = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [countries, setCountries] = useState<Country[]>([]);
@@ -68,7 +71,10 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
 
   const example = useMemo(() => {
     if (!selectedCountry) return undefined;
-    return getExampleNumber(selectedCountry.iso2.toUpperCase() as CountryCode, examples);
+    return getExampleNumber(
+      selectedCountry.iso2.toUpperCase() as CountryCode,
+      examples
+    );
   }, [selectedCountry]);
 
   const formatter = useMemo(() => {
@@ -111,7 +117,10 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -146,39 +155,53 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
     onCountryChange?.(country);
   };
 
-  const handleInputChange = (inputValue: string) => {
-    if (!selectedCountry || !formatter) return;
+const handleInputChange = (inputValue: string) => {
+  if (!selectedCountry || !formatter) return;
 
-    let inputDigits = inputValue.replace(/\D/g, "");
+  let inputDigits = inputValue.replace(/\D/g, "");
 
-    if (trunkPrefixCountries.has(selectedCountry.iso2.toUpperCase())) {
-      if (inputDigits.startsWith("0")) {
-        inputDigits = inputDigits.substring(1);
-      }
+  if (trunkPrefixCountries.has(selectedCountry.iso2.toUpperCase())) {
+    if (inputDigits.startsWith("0")) {
+      inputDigits = inputDigits.slice(1);
     }
+  }
 
-    const maxDigits = example?.nationalNumber?.replace(/\D/g, "").length ?? 15;
-    inputDigits = inputDigits.slice(0, maxDigits);
+  const maxDigits = example?.nationalNumber?.replace(/\D/g, "").length ?? 15;
+  inputDigits = inputDigits.slice(0, maxDigits);
 
-    formatter.reset();
-    const formatted = formatter.input(inputDigits);
-    onChange(formatted);
+  formatter.reset();
+  const formatted = formatter.input(inputDigits);
+  onChange(formatted);
 
-    const phoneNumber = formatter.getNumber();
-    if (phoneNumber) {
-      onRawChange?.(phoneNumber.number);
-      setIsValid(phoneNumber.isValid());
-    } else {
-      onRawChange?.("");
+  const rawNumber = selectedCountry.dialCode + inputDigits;
+  const parsed = parsePhoneNumberFromString(rawNumber);
+
+  if (parsed && parsed.isValid()) {
+    const type = parsed.getType?.();
+    const isMobile = type === "MOBILE" || type === "FIXED_LINE_OR_MOBILE";
+
+    if (mobileOnly && !isMobile) {
       setIsValid(false);
+      onRawChange?.("");
+    } else {
+      setIsValid(true);
+      onRawChange?.(parsed.number);
     }
-  };
+  } else {
+    setIsValid(false);
+    onRawChange?.("");
+  }
+};
 
   const placeholder = useMemo(() => {
     if (!example?.nationalNumber) return "";
     const nationalFormat = example.formatNational();
     if (mask === "exampleNumber") return nationalFormat;
-    if (typeof mask === "string" && mask.length === 1 && !/[a-zA-Z]/.test(mask)) {
+    if (
+      typeof mask === "string" &&
+      mask.length === 1 &&
+      !/[a-zA-Z]/.test(mask)
+    ) {
       return nationalFormat.replace(/\d/g, mask);
     }
     return nationalFormat;
@@ -194,7 +217,13 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
           {selectedCountry && <FlagIcon iso2={selectedCountry.iso2} />}
           <span className="phonebox-dialcode">{selectedCountry?.dialCode}</span>
           <span className="phonebox-caret">
-            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M0.154909 5.27123L7.56846 12.4935C7.62748 12.551 7.69018 12.5942 7.75657 12.6229C7.82296 12.6516 7.90041 12.666 7.98893 12.666C8.07745 12.666 8.15491 12.6516 8.2213 12.6229C8.28769 12.5942 8.35039 12.551 8.4094 12.4935L15.8451 5.24967C15.9484 5.14906 16 5.02689 16 4.88316C16 4.73943 15.941 4.61008 15.823 4.4951C15.7344 4.39449 15.609 4.34418 15.4467 4.34418C15.2845 4.34418 15.1443 4.39449 15.0263 4.4951L7.98893 11.3725L0.929459 4.47354C0.826186 4.37293 0.697095 4.32622 0.542184 4.3334C0.387274 4.34059 0.258182 4.39449 0.154909 4.4951C0.0516354 4.59571 0 4.72506 0 4.88316C0 5.04126 0.0516354 5.17062 0.154909 5.27123Z"
                 fill="#FAFAFA"
@@ -228,7 +257,9 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
               >
                 <FlagIcon iso2={country.iso2} />
                 <span>{country.name}</span>
-                <span className="phonebox-option-dialcode">{country.dialCode}</span>
+                <span className="phonebox-option-dialcode">
+                  {country.dialCode}
+                </span>
               </div>
             ))}
           </div>
