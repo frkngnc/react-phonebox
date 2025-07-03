@@ -55,8 +55,9 @@ function App() {
 | `onCountryChange`  | `(country: Country) => void` | Returns selected country object                                                           |
 | `onValidityChange` | `(valid: boolean) => void`   | Returns whether current phone is valid                                                    |
 | `searchPlaceholder`| `string`                     | Placeholder text for the country search input                                             |
-| `mask`             | `"exampleNumber"`            | Accepts only special characters like `*`, `-`, `.`, etc., or the string `"exampleNumber"` |
-| `theme`            | `string`                     | dark & light                                                                               | 
+| `mask`             | `"exampleNumber"` \| `string`| Accepts only special characters like `*`, `-`, `.`, etc., or the string `"exampleNumber"` |
+| `theme`            | `"dark"` \| `"light"`        | Light and dark theme support                                                              |
+| `mobileOnly`       | `boolean`                    | If `true`, only mobile numbers are considered valid                                       |
 
 
 ## 🌐 Languages Supported
