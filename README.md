@@ -183,4 +183,4 @@ MIT
 
 Check out the live demo: [react-phonebox demo](https://react-phonebox-demo.vercel.app)
 
-> Developed with ❤️ by [frkngnc](https://github.com/frkngnc)
+> Developed with by [frkngnc](https://github.com/frkngnc)
