@@ -90,7 +90,6 @@ function PhoneInputWithHooks() {
   const validation = validate(raw, false);
 
   return (
-    <>
       <PhoneBoxInput
         value={formatted}
         onChange={setValue}
@@ -101,7 +100,6 @@ function PhoneInputWithHooks() {
         theme="dark"
         searchPlaceholder="Ülke ara..."
       />
-    </>
   );
 }
 ```
