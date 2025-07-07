@@ -12,7 +12,7 @@ const config: Config = {
   },
 
   url: "https://frkngnc.github.io",
-  baseUrl: "/react-phonebox",
+  baseUrl: "/react-phonebox/",
   organizationName: "frkngnc",
   projectName: "react-phonebox",
   onBrokenLinks: "throw",
