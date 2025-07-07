@@ -101,11 +101,6 @@ function PhoneInputWithHooks() {
         theme="dark"
         searchPlaceholder="Ülke ara..."
       />
-
-      <p>Placeholder: {placeholder}</p>
-      <p>Raw: {raw}</p>
-      <p>Valid? {validation.isValid ? "✅" : "❌"}</p>
-      {example && <p>Example: {example.formatInternational()}</p>}
     </>
   );
 }
