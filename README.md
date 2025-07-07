@@ -8,7 +8,7 @@ A lightweight, customizable, and i18n-ready phone number input component with co
 
 ## ✨ Features
 
-- 🌍 Locale-based country names (supports `en`, `tr`, `fr`, `de`, `ar`, `es`, `ur`, etc.)
+- 🌍 Locale-based country names (supports `en`, `tr`, `fr`, `ar`, `es`, `ur`, etc.)
 - 📞 Auto-formats and validates numbers using libphonenumber-js
 - 🇺🇳 Flag icons from [flagcdn.com](https://flagcdn.com)
 - 🔍 Debounced country search with intelligent filtering
@@ -152,7 +152,6 @@ Static JSON translations for:
 - Turkish (`tr`)
 - Arabic (`ar`)
 - Urdu (`ur`)
-- German (`de`)
 - French (`fr`)
 - Spanish (`es`)
 
