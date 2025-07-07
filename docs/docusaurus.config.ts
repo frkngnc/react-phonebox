@@ -52,10 +52,6 @@ const config: Config = {
       title: "React PhoneBox",
       items: [
         {
-          type: "docsVersionDropdown",
-          position: "right",
-        },
-        {
           type: "docSidebar",
           sidebarId: "docsSidebar",
           position: "left",
