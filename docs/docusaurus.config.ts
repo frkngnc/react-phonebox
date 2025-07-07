@@ -30,7 +30,7 @@ const config: Config = {
         docs: {
           sidebarPath: "./sidebars.ts",
           routeBasePath: "/",
-          editUrl: "https://github.com/frkngnc/react-phonebox/edit/main/docs/docs/",
+          editUrl: "https://github.com/frkngnc/react-phonebox/edit/main/docs/",
           lastVersion: "current",
         },
         theme: {
