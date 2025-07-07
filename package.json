@@ -3,6 +3,7 @@
   "version": "1.2.12",
   "author": "Furkan Genc",
   "description": "A customizable phone input component with built-in multi-language support.",
+  "license": "MIT",
   "keywords": [
     "phone",
     "phone input",
@@ -28,14 +29,21 @@
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./style.css": "./dist/style.css"
+  },
   "files": [
     "dist",
-    "README.md",
-    "dist/PhoneBox.css"
+    "README.md"
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc --emitDeclarationOnly --outDir dist && cp src/components/PhoneBox.css dist/PhoneBox.css"
+    "build": "vite build"
   },
   "publishConfig": {
     "access": "public"

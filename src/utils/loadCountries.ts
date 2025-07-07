@@ -14,7 +14,13 @@ const locales = import.meta.glob("../utils/langs/*.json", {
   eager: true,
 }) as Record<string, { default: Record<string, string> }>;
 
+const countryCache = new Map<string, Country[]>();
+
 export async function loadCountries(locale: string = "en"): Promise<Country[]> {
+  if (countryCache.has(locale)) {
+    return countryCache.get(locale)!;
+  }
+
   let translations: Record<string, string> = {};
 
   const availableKey = Object.keys(locales).find((key) =>
@@ -44,7 +50,14 @@ export async function loadCountries(locale: string = "en"): Promise<Country[]> {
       translations[iso2.toUpperCase()] ||
       translations[iso2.toLowerCase()] ||
       iso2;
-    const dialCode = "+" + getCountryCallingCode(iso2 as any);
+
+    let dialCode = "";
+    try {
+      dialCode = "+" + getCountryCallingCode(iso2 as any);
+    } catch {
+      console.warn("No dial code found for", iso2);
+    }
+
     return {
       name,
       iso2,
@@ -52,5 +65,8 @@ export async function loadCountries(locale: string = "en"): Promise<Country[]> {
     };
   });
 
-  return countries;
+  const sorted = countries.sort((a, b) => a.name.localeCompare(b.name, locale));
+
+  countryCache.set(locale, sorted);
+  return sorted;
 }

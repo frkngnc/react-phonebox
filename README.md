@@ -1,7 +1,10 @@
 # React PhoneBox
+
 [![npm version](https://img.shields.io/npm/v/react-phonebox.svg)](https://www.npmjs.com/package/react-phonebox)
 
 A lightweight, customizable, and i18n-ready phone number input component with country selection, flag icons, validation, and formatting — powered by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js).
+
+---
 
 ## ✨ Features
 
@@ -9,10 +12,13 @@ A lightweight, customizable, and i18n-ready phone number input component with co
 - 📞 Auto-formats and validates numbers using libphonenumber-js
 - 🇺🇳 Flag icons from [flagcdn.com](https://flagcdn.com)
 - 🔍 Debounced country search with intelligent filtering
-- 😦 Validity feedback via callback
-- 🌓 Light & Dark theme support via `theme` prop
+- ✅ Validity feedback via callback
+- 🌗 Light & Dark theme support
 - 💡 Built-in RTL support
-- ✨ Customizable input mask formatting (single char mask like `*`, `-`, `.` or example number mask)
+- 🔧 Modular hook-based API for advanced use cases
+- 🪶 Lightweight and tree-shakable
+
+---
 
 ## 🚀 Installation
 
@@ -22,47 +28,132 @@ npm install react-phonebox
 yarn add react-phonebox
 ```
 
-## 🔧 Basic Usage
+---
+
+## 🔧 Basic Usage (Easy Mode)
 
 ```tsx
 import { useState } from "react";
 import { PhoneBox } from "react-phonebox";
-import "react-phonebox/dist/PhoneBox.css";
+import "react-phonebox/style.css";
 
 function App() {
   const [phone, setPhone] = useState("");
   const [rawPhone, setRawPhone] = useState("");
+  const [isValid, setIsValid] = useState(false);
 
   return (
     <PhoneBox
       value={phone}
       onChange={setPhone}
       onRawChange={setRawPhone}
+      onValidChange={setIsValid}
+      locale="tr"
+      initialCountry="TR"
+      theme="dark"
+      searchPlaceholder="Ülke ara..."
+      mobileOnly
     />
   );
 }
 ```
 
-## 🧪 Props
+---
 
-| Prop               | Type                         | Description                                                                               |
-| ------------------ | ---------------------------- | ------------------------------------------------------------------------------------------|
-| `value`            | `string`                     | Current phone number value                                                                |
-| `onChange`         | `(value: string) => void`    | Triggered on input change                                                                 |
-| `onRawChange`      | `(raw: string) => void`      | Triggered on input change (raw numeric value without formatting)                          |
-| `locale`           | `string`                     | Language key (`en`, `tr`, `fr`, etc.)                                                     |
-| `initialCountry`   | `string`                     | ISO 3166-1 alpha-2 country code (e.g. `tr`, `us`)                                         |
-| `onCountryChange`  | `(country: Country) => void` | Returns selected country object                                                           |
-| `onValidityChange` | `(valid: boolean) => void`   | Returns whether current phone is valid                                                    |
-| `searchPlaceholder`| `string`                     | Placeholder text for the country search input                                             |
-| `mask`             | `"exampleNumber"` \| `string`| Accepts only special characters like `*`, `-`, `.`, etc., or the string `"exampleNumber"` |
-| `theme`            | `"dark"` \| `"light"`        | Light and dark theme support                                                              |
-| `mobileOnly`       | `boolean`                    | If `true`, only mobile numbers are considered valid                                       |
+## ⚙️ Advanced Usage (Full Control)
 
+```tsx
+import { useState } from "react";
+import {
+  PhoneBoxInput,
+  useFormatter,
+  useExampleNumber,
+  useMobileOnly
+} from "react-phonebox";
+import "react-phonebox/style.css";
+
+function PhoneInputWithHooks() {
+  const [value, setValue] = useState("");
+  const [country, setCountry] = useState<any>({
+    iso2: "TR",
+    dialCode: "+90",
+    name: "Turkey"
+  });
+
+  const { format } = useFormatter(country?.iso2);
+  const { placeholder, example, maxDigits } = useExampleNumber(country?.iso2);
+  const { validate } = useMobileOnly();
+
+  const digits = value.replace(/\D/g, "").slice(0, maxDigits ?? 15);
+  const formatted = format(digits);
+  const raw = (country?.dialCode ?? "") + digits;
+  const validation = validate(raw, false);
+
+  return (
+    <>
+      <PhoneBoxInput
+        value={formatted}
+        onChange={setValue}
+        onCountryChange={setCountry}
+        initialCountry="TR"
+        locale="tr"
+        placeholder={placeholder}
+        theme="dark"
+        searchPlaceholder="Ülke ara..."
+      />
+
+      <p>Placeholder: {placeholder}</p>
+      <p>Raw: {raw}</p>
+      <p>Valid? {validation.isValid ? "✅" : "❌"}</p>
+      {example && <p>Example: {example.formatInternational()}</p>}
+    </>
+  );
+}
+```
+
+---
+
+## 🔌 Exposed Hooks
+
+| Hook                 | Description                                                |
+|----------------------|------------------------------------------------------------|
+| `useFormatter()`     | Formats input value live using `AsYouType`                 |
+| `useExampleNumber()` | Returns example number, placeholder, and max digits        |
+| `useMobileOnly()`    | Validates mobile numbers only if `mobileOnly: true`        |
+
+---
+
+## 🧪 `<PhoneBox />` Props
+
+| Prop               | Type                           | Description                                                  |
+|--------------------|--------------------------------|--------------------------------------------------------------|
+| `value`            | `string`                       | Formatted phone number string                                |
+| `onChange`         | `(val: string) => void`        | Input value change handler                                   |
+| `locale`           | `string`                       | Locale key (`en`, `tr`, `fr`, etc.)                          |
+| `initialCountry`   | `string`                       | Initial country ISO2 code (`TR`, `US`, etc.)                 |
+| `theme`            | `"dark"` \| `"light"`          | Theme mode                                                   |
+| `searchPlaceholder`| `string`                       | Country search input placeholder                             |
+| `mobileOnly`       | `boolean`                      | If true, only mobile numbers are considered valid            |
+| `onRawChange`      | `(raw: string) => void`        | Callback for raw (unformatted) phone number                  |
+| `onValidChange`    | `(valid: boolean) => void`     | Callback to track if phone number is valid                   |
+
+---
+
+## 🧱 Styling
+
+You must import styles manually:
+
+```tsx
+import "react-phonebox/style.css";
+```
+
+You can override any class via CSS or use CSS variables for customization.
+
+---
 
 ## 🌐 Languages Supported
 
-Currently includes static JSON translations for:
+Static JSON translations for:
 
 - English (`en`)
 - Turkish (`tr`)
@@ -72,11 +163,7 @@ Currently includes static JSON translations for:
 - French (`fr`)
 - Spanish (`es`)
 
-## 🧱 Styling
-
-Basic styles are included via `PhoneBox.css`. Supports both dark and light themes via theme prop.
-You can customize or override styles by importing your own CSS and/or overriding CSS variables.. 
-
+---
 
 ## 🛆 License
 
@@ -88,4 +175,4 @@ MIT
 
 Check out the live demo: [react-phonebox demo](https://react-phonebox-demo.vercel.app)
 
-> Developed with 🎉​ by [frkngnc](https://github.com/frkngnc)
+> Developed with ❤️ by [frkngnc](https://github.com/frkngnc)

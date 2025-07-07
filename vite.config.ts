@@ -1,44 +1,22 @@
-import { fileURLToPath } from "url";
-import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      "@components": path.resolve(__dirname, "./src/components"),
-      "@utils": path.resolve(__dirname, "./src/utils"),
-    },
-  },
   build: {
     lib: {
-      entry: "src/index.ts",
+      entry: path.resolve(__dirname, "src/index.ts"),
       name: "ReactPhoneBox",
-      formats: ["es", "umd", "cjs"],
-      fileName: (format) => {
-        switch (format) {
-          case "es":
-            return "index.es.js";
-          case "umd":
-            return "index.umd.js";
-          case "cjs":
-            return "index.cjs.js";
-          default:
-            return `index.${format}.js`;
-        }
-      },
+      fileName: (format) => `index.${format}.js`,
+      formats: ['es', 'cjs']
     },
     rollupOptions: {
-      external: ["react", "react-dom", "react/jsx-runtime"],
+      external: ["react", "react-dom"],
       output: {
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
-          "react/jsx-runtime": "jsxRuntime",
         },
       },
     },
