@@ -52,7 +52,7 @@
     "access": "public"
   },
   "dependencies": {
-    "libphonenumber-js": "^1.12.9"
+    "libphonenumber-js": "^1.13.8"
   },
   "peerDependencies": {
     "react": ">=17",
