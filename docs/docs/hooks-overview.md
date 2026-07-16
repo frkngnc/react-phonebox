@@ -14,11 +14,12 @@ Formats a given phone number string according to the selected country.
 import { useFormatter } from 'react-phonebox';
 
 const { format } = useFormatter('TR');
-const formatted = format('5012345678');
+const formatted = format('05012345678');
 ```
 
 ### Returns:
-- `format(input: string): string` – Formats input digits using libphonenumber-js `AsYouType`.
+- `format(input: string): string` - Formats input using the selected country and
+  libphonenumber-js `AsYouType`.
 
 ---
 
@@ -33,9 +34,10 @@ const { placeholder, example, maxDigits } = useExampleNumber('US');
 ```
 
 ### Returns:
-- `placeholder` – Example-based national format string (e.g. `201-555-0123`)
-- `example` – Example number object with formatting methods
-- `maxDigits` – Max allowed digit count for national number
+- `placeholder` - Example-based national format string (e.g. `201-555-0123`)
+- `example` - Example number object with formatting methods
+- `maxDigits` - Digit count of the example number. This is informational and
+  should not be used as a hard input limit because valid number lengths can vary.
 
 ---
 
@@ -47,11 +49,18 @@ Validates a phone number and ensures it's a mobile number if `mobileOnly = true`
 import { useMobileOnly } from 'react-phonebox';
 
 const { validate } = useMobileOnly();
-const result = validate('+905012345678', true);
+const result = validate('05012345678', true, 'TR');
+
+if (result.isValid) {
+  console.log(result.parsed); // +905012345678
+}
 ```
 
 ### Returns:
-- `validate(raw: string, mobileOnly: boolean)` → `{ isValid: boolean; parsed?: string }`
+- `validate(value: string, mobileOnly: boolean, country?: string)` → `{ isValid: boolean; parsed?: string }`
+
+The optional country code allows national input, including trunk prefixes such as
+`0`, to be parsed into the correct E.164 value.
 
 ---
 

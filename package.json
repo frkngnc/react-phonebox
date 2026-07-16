@@ -1,6 +1,6 @@
 {
   "name": "react-phonebox",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "author": "Furkan Genc",
   "description": "A customizable phone input component with built-in multi-language support.",
   "license": "MIT",
@@ -26,14 +26,14 @@
     "url": "https://github.com/frkngnc/react-phonebox/issues"
   },
   "homepage": "https://frkngnc.github.io/react-phonebox",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.es.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.es.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.es.js",
-      "require": "./dist/index.cjs.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.es.mjs",
+      "require": "./dist/index.cjs"
     },
     "./style.css": "./dist/style.css"
   },
@@ -42,8 +42,11 @@
     "README.md"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build"
+    "dev": "npm --prefix docs start",
+    "docs:build": "npm --prefix docs run build",
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "test": "vitest run",
+    "prepublishOnly": "npm test && npm run build"
   },
   "publishConfig": {
     "access": "public"
@@ -56,10 +59,14 @@
     "react-dom": ">=17"
   },
   "devDependencies": {
+    "@testing-library/react": "^14.3.1",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "@vitejs/plugin-react": "^4.0.0",
+    "@vitejs/plugin-react": "^6.0.3",
+    "jsdom": "^22.1.0",
     "typescript": "^5.0.0",
-    "vite": "^4.5.0"
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
   }
 }

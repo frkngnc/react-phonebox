@@ -22,9 +22,10 @@ import { PhoneBox } from 'react-phonebox';
 import 'react-phonebox/style.css';
 
 export default function RHFExample() {
-  const { control, handleSubmit, watch } = useForm({
+  const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
-      phone: ''
+      phone: '',
+      phoneE164: '',
     }
   });
 
@@ -41,6 +42,7 @@ export default function RHFExample() {
           <PhoneBox
             value={field.value}
             onChange={field.onChange}
+            onRawChange={(raw) => setValue('phoneE164', raw)}
             initialCountry="US"
             locale="en"
             mobileOnly
@@ -76,6 +78,7 @@ export default function FormikExample() {
   const formik = useFormik({
     initialValues: {
       phone: '',
+      phoneE164: '',
     },
     onSubmit: (values) => {
       console.log('Formik form data:', values);
@@ -87,6 +90,7 @@ export default function FormikExample() {
       <PhoneBox
         value={formik.values.phone}
         onChange={(val) => formik.setFieldValue('phone', val)}
+        onRawChange={(raw) => formik.setFieldValue('phoneE164', raw)}
         initialCountry="US"
         locale="en"
         mobileOnly
@@ -96,3 +100,7 @@ export default function FormikExample() {
   );
 }
 ```
+
+`phone` contains the formatted display value. `phoneE164` contains the
+international E.164 value that is usually preferable for API requests and
+database storage.

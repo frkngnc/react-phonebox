@@ -20,6 +20,7 @@ pnpm-debug.log*
 
 # MacOS files
 .DS_Store
+.playwright-cli/
 
 # Env files
 .env

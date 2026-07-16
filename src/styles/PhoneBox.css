@@ -1,19 +1,30 @@
 :root {
   --phonebox-bg: #1f1f1f;
-  --phonebox-text: white;
+  --phonebox-text: #f5f5f2;
   --phonebox-border: #8c8c8c;
   --phonebox-hover: #393a3d;
   --phonebox-scroll-thumb: #a7a7a9;
   --phonebox-option-dialcode: #8c8c8c;
+  --phonebox-soft-bg: #292b29;
+  --phonebox-soft-border: #4a4d49;
+  --phonebox-pill-select: #363936;
+  --phonebox-shadow: rgba(8, 10, 8, 0.32);
+  --phonebox-control-radius: 5px;
+  --phonebox-dropdown-radius: 6px;
+  --phonebox-option-radius: 4px;
 }
 
 .phonebox-wrapper.light {
-  --phonebox-bg: #fff;
+  --phonebox-bg: #fdfdfb;
   --phonebox-text: #1f1f1f;
   --phonebox-border: #ccc;
   --phonebox-hover: #f0f0f0;
   --phonebox-scroll-thumb: #bbb;
   --phonebox-option-dialcode: #666;
+  --phonebox-soft-bg: #f2f3f0;
+  --phonebox-soft-border: #d9dbd5;
+  --phonebox-pill-select: #e5e7e1;
+  --phonebox-shadow: rgba(44, 48, 40, 0.14);
 }
 
 .phonebox-wrapper {
@@ -25,7 +36,7 @@
 .phonebox-input {
   display: flex;
   border: 1px solid var(--phonebox-border);
-  border-radius: 5px;
+  border-radius: var(--phonebox-control-radius);
   overflow: hidden;
   height: 48px;
 }
@@ -40,6 +51,24 @@
   border-right: 1px solid var(--phonebox-border);
   background: var(--phonebox-bg);
   color: var(--phonebox-text);
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  font: inherit;
+}
+
+.phonebox-select:focus-visible,
+.phonebox-field:focus-visible,
+.phonebox-search:focus-visible,
+.phonebox-option:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+.phonebox-select:disabled,
+.phonebox-field:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .phonebox-dialcode {
@@ -70,9 +99,9 @@
   right: 0;
   background: var(--phonebox-bg);
   border: 1px solid var(--phonebox-border);
-  border-radius: 6px;
+  border-radius: var(--phonebox-dropdown-radius);
   margin-top: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--phonebox-shadow);
   z-index: 1000;
   padding: 8px 8px 0 8px;
 }
@@ -96,7 +125,7 @@
   padding: 6px 8px;
   font-size: 14px;
   border: 1px solid var(--phonebox-border);
-  border-radius: 6px;
+  border-radius: var(--phonebox-dropdown-radius);
   background: var(--phonebox-bg);
   z-index: 1;
   color: var(--phonebox-text);
@@ -108,11 +137,44 @@
   gap: 8px;
   padding: 6px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: var(--phonebox-option-radius);
   transition: background 0.2s;
   color: var(--phonebox-text);
   overflow-x: hidden;
   font-size: 12px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: start;
+  font-family: inherit;
+  box-sizing: border-box;
+  height: 36px;
+  min-height: 36px;
+}
+
+.phonebox-options-virtual {
+  position: relative;
+  width: 100%;
+}
+
+.phonebox-options-virtual .phonebox-option {
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+}
+
+.phonebox-option-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.phonebox-flag-emoji {
+  width: 20px;
+  flex: 0 0 20px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .phonebox-options-scroll {
@@ -135,8 +197,20 @@
   background-color: var(--phonebox-hover);
 }
 
+.phonebox-option[aria-selected="true"] {
+  background-color: var(--phonebox-hover);
+}
+
+.phonebox-empty {
+  padding: 12px 6px;
+  color: var(--phonebox-option-dialcode);
+  font-size: 12px;
+  text-align: center;
+}
+
 .phonebox-option-dialcode {
   color: var(--phonebox-option-dialcode);
+  margin-inline-start: auto;
 }
 
 .phonebox-wrapper.rtl {
@@ -155,4 +229,116 @@
 .phonebox-wrapper.rtl .phonebox-caret {
   margin-left: 0;
   margin-right: 4px;
+}
+
+/* Minimal: flat, low-chrome treatment for editorial and form-heavy layouts. */
+.phonebox-variant-minimal {
+  --phonebox-control-radius: 0;
+  --phonebox-dropdown-radius: 0;
+  --phonebox-option-radius: 0;
+}
+
+.phonebox-variant-minimal .phonebox-input {
+  border: none;
+  border-bottom: 1px solid var(--phonebox-border);
+  overflow: visible;
+}
+
+.phonebox-variant-minimal .phonebox-select,
+.phonebox-variant-minimal .phonebox-field {
+  background: transparent;
+}
+
+.phonebox-variant-minimal .phonebox-select,
+.phonebox-variant-minimal.rtl .phonebox-select {
+  border: none;
+}
+
+.phonebox-variant-minimal .phonebox-dropdown {
+  margin-top: 8px;
+  box-shadow: none;
+}
+
+/* Soft: quiet filled surface with a restrained tinted shadow. */
+.phonebox-variant-soft {
+  --phonebox-control-radius: 12px;
+  --phonebox-dropdown-radius: 12px;
+  --phonebox-option-radius: 8px;
+}
+
+.phonebox-variant-soft .phonebox-input {
+  border-color: var(--phonebox-soft-border);
+  background: var(--phonebox-soft-bg);
+  box-shadow: inset 0 1px 0 rgba(245, 245, 242, 0.04);
+}
+
+.phonebox-variant-soft .phonebox-select,
+.phonebox-variant-soft .phonebox-field {
+  background: transparent;
+}
+
+.phonebox-variant-soft .phonebox-dropdown {
+  border-color: var(--phonebox-soft-border);
+  box-shadow: 0 14px 32px var(--phonebox-shadow);
+}
+
+.phonebox-variant-soft .phonebox-search {
+  border-color: var(--phonebox-soft-border);
+  background: var(--phonebox-soft-bg);
+}
+
+/* Pill: rounded control with a separate tactile country selector. */
+.phonebox-variant-pill {
+  --phonebox-control-radius: 999px;
+  --phonebox-dropdown-radius: 16px;
+  --phonebox-option-radius: 999px;
+}
+
+.phonebox-variant-pill .phonebox-input {
+  box-sizing: border-box;
+  padding: 3px;
+  border-color: var(--phonebox-soft-border);
+  background: var(--phonebox-soft-bg);
+}
+
+.phonebox-variant-pill .phonebox-select {
+  padding-inline: 12px;
+  border: none;
+  border-radius: 999px;
+  background: var(--phonebox-pill-select);
+}
+
+.phonebox-variant-pill.rtl .phonebox-select {
+  border: none;
+}
+
+.phonebox-variant-pill .phonebox-field {
+  padding-inline: 14px;
+  background: transparent;
+}
+
+.phonebox-variant-pill .phonebox-dropdown {
+  margin-top: 8px;
+  padding: 10px 10px 2px;
+  border-color: var(--phonebox-soft-border);
+  box-shadow: 0 14px 32px var(--phonebox-shadow);
+}
+
+.phonebox-variant-pill .phonebox-search {
+  padding: 8px 12px;
+  border-color: var(--phonebox-soft-border);
+}
+
+.phonebox-select:active {
+  transform: scale(0.98);
+}
+
+.phonebox-option:active {
+  opacity: 0.78;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phonebox-option {
+    transition: none;
+  }
 }

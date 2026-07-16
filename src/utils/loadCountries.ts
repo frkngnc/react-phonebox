@@ -1,6 +1,11 @@
-/// <reference types="vite/client" />
 import metadata from "libphonenumber-js/metadata.min.json";
 import { getCountryCallingCode } from "libphonenumber-js";
+import ar from "./langs/ar.json";
+import en from "./langs/en.json";
+import es from "./langs/es.json";
+import fr from "./langs/fr.json";
+import tr from "./langs/tr.json";
+import ur from "./langs/ur.json";
 
 export type Country = {
   name: string;
@@ -10,35 +15,39 @@ export type Country = {
 
 const EXCLUDED_CODES = ["AC", "TA", "XK", "ZZ"];
 
-const locales = import.meta.glob("../utils/langs/*.json", {
-  eager: true,
-}) as Record<string, { default: Record<string, string> }>;
+const locales: Record<string, Record<string, string>> = {
+  ar,
+  en,
+  es,
+  fr,
+  tr,
+  ur,
+};
 
 const countryCache = new Map<string, Country[]>();
 
 export async function loadCountries(locale: string = "en"): Promise<Country[]> {
-  if (countryCache.has(locale)) {
-    return countryCache.get(locale)!;
+  const requestedLocale = locale || "en";
+  const cacheKey = requestedLocale.toLowerCase();
+
+  if (countryCache.has(cacheKey)) {
+    return countryCache.get(cacheKey)!;
   }
 
-  let translations: Record<string, string> = {};
+  const localeKey = requestedLocale.toLowerCase().split(/[-_]/)[0];
 
-  const availableKey = Object.keys(locales).find((key) =>
-    key.endsWith(`/${locale}.json`)
-  );
-  const fallbackKey = Object.keys(locales).find((key) =>
-    key.endsWith("/en.json")
-  );
+  const translations = locales[localeKey] ?? {};
+  const englishTranslations = locales.en;
 
-  if (availableKey && locales[availableKey]) {
-    translations = locales[availableKey].default;
-  } else if (fallbackKey && locales[fallbackKey]) {
-    console.warn("Fallback to English");
-    translations = locales[fallbackKey].default;
-    locale = "en";
-  } else {
-    console.error("No valid locale files found.");
-    return [];
+  let displayNames: Intl.DisplayNames | undefined;
+  try {
+    displayNames = new Intl.DisplayNames([requestedLocale], { type: "region" });
+  } catch {
+    try {
+      displayNames = new Intl.DisplayNames(["en"], { type: "region" });
+    } catch {
+      displayNames = undefined;
+    }
   }
 
   const isoCodes = Object.keys(metadata.countries).filter(
@@ -49,6 +58,9 @@ export async function loadCountries(locale: string = "en"): Promise<Country[]> {
     const name =
       translations[iso2.toUpperCase()] ||
       translations[iso2.toLowerCase()] ||
+      displayNames?.of(iso2) ||
+      englishTranslations[iso2.toUpperCase()] ||
+      englishTranslations[iso2.toLowerCase()] ||
       iso2;
 
     let dialCode = "";
@@ -65,8 +77,14 @@ export async function loadCountries(locale: string = "en"): Promise<Country[]> {
     };
   });
 
-  const sorted = countries.sort((a, b) => a.name.localeCompare(b.name, locale));
+  const sorted = countries.sort((a, b) => {
+    try {
+      return a.name.localeCompare(b.name, requestedLocale);
+    } catch {
+      return a.name.localeCompare(b.name, "en");
+    }
+  });
 
-  countryCache.set(locale, sorted);
+  countryCache.set(cacheKey, sorted);
   return sorted;
 }

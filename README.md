@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue.svg)](https://www.typescriptlang.org/)
 
-A lightweight, customizable, and i18n-ready phone number input component with country selection, flag icons, validation, and formatting — powered by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js).
+A lightweight, customizable, and i18n-ready phone number input component with country selection, flag icons, validation, and formatting. Powered by [`libphonenumber-js`](https://github.com/catamphetamine/libphonenumber-js).
 
 ---
 
@@ -19,6 +19,10 @@ Includes:
 - Full API reference
 - Customization & styling guides
 - Supported locales & validation behavior
+- An interactive light and dark theme demo
+
+Try the live demo at
+[https://frkngnc.github.io/react-phonebox/demo](https://frkngnc.github.io/react-phonebox/demo).
 
 ---
 
@@ -27,9 +31,13 @@ Includes:
 - 🌍 Locale-based country names (supports `en`, `tr`, `fr`, `ar`, `es`, `ur`, etc.)
 - 📞 Auto-formats and validates numbers using libphonenumber-js
 - 🇺🇳 Flag icons from [flagcdn.com](https://flagcdn.com)
+- 🏳️ CDN, native emoji, no-flag, or fully custom flag rendering
 - 🔍 Debounced country search with intelligent filtering
+- ⚡ Virtualized country list for low DOM and image overhead
+- ⌨️ Keyboard and screen-reader friendly country picker
 - ✅ Validity feedback via callback
 - 🌗 Light & Dark theme support
+- 🎛️ Classic, minimal, soft, and pill design variants
 - 💡 Built-in RTL support
 - 🔧 Modular hook-based API for advanced use cases
 - 🪶 Lightweight and tree-shakable
@@ -59,17 +67,25 @@ function App() {
   const [isValid, setIsValid] = useState(false);
 
   return (
-    <PhoneBox
-      value={phone}
-      onChange={setPhone}
-      onRawChange={setRawPhone}
-      onValidChange={setIsValid}
-      locale="tr"
-      initialCountry="TR"
-      theme="dark"
-      searchPlaceholder="Ülke ara..."
-      mobileOnly
-    />
+    <>
+      <PhoneBox
+        value={phone}
+        onChange={setPhone}
+        onRawChange={setRawPhone}
+        onValidChange={setIsValid}
+        locale="tr"
+        initialCountry="TR"
+        theme="dark"
+        variant="soft"
+        searchPlaceholder="Ülke ara..."
+        flagMode="emoji"
+        mobileOnly
+      />
+
+      <p>Formatted: {phone || "-"}</p>
+      <p>Raw: {rawPhone || "-"}</p>
+      <p>Valid: {phone ? (isValid ? "Yes" : "No") : "-"}</p>
+    </>
   );
 }
 ```
@@ -81,29 +97,28 @@ function App() {
 ```tsx
 import { useState } from "react";
 import {
+  type Country,
   PhoneBoxInput,
   useFormatter,
   useExampleNumber,
-  useMobileOnly
+  useMobileOnly,
 } from "react-phonebox";
 import "react-phonebox/style.css";
 
 function PhoneInputWithHooks() {
   const [value, setValue] = useState("");
-  const [country, setCountry] = useState<any>({
+  const [country, setCountry] = useState<Country>({
     iso2: "TR",
     dialCode: "+90",
     name: "Turkey"
   });
 
   const { format } = useFormatter(country?.iso2);
-  const { placeholder, example, maxDigits } = useExampleNumber(country?.iso2);
+  const { placeholder, example } = useExampleNumber(country?.iso2);
   const { validate } = useMobileOnly();
 
-  const digits = value.replace(/\D/g, "").slice(0, maxDigits ?? 15);
-  const formatted = format(digits);
-  const raw = (country?.dialCode ?? "") + digits;
-  const validation = validate(raw, false);
+  const formatted = format(value);
+  const validation = validate(value, false, country?.iso2);
 
   return (
       <PhoneBoxInput
@@ -137,14 +152,27 @@ function PhoneInputWithHooks() {
 | Prop               | Type                           | Description                                                  |
 |--------------------|--------------------------------|--------------------------------------------------------------|
 | `value`            | `string`                       | Formatted phone number string                                |
-| `onChange`         | `(val: string) => void`        | Input value change handler                                   |
+| `onChange`         | `(val: string) => void`        | Called with the formatted display value                      |
 | `locale`           | `string`                       | Locale key (`en`, `tr`, `fr`, etc.)                          |
 | `initialCountry`   | `string`                       | Initial country ISO2 code (`TR`, `US`, etc.)                 |
 | `theme`            | `"dark"` \| `"light"`          | Theme mode                                                   |
+| `variant`          | `"classic" \| "minimal" \| "soft" \| "pill"` | Built-in visual treatment                     |
 | `searchPlaceholder`| `string`                       | Country search input placeholder                             |
 | `mobileOnly`       | `boolean`                      | If true, only mobile numbers are considered valid            |
-| `onRawChange`      | `(raw: string) => void`        | Callback for raw (unformatted) phone number                  |
+| `onRawChange`      | `(raw: string) => void`        | Callback for the E.164 phone number                          |
 | `onValidChange`    | `(valid: boolean) => void`     | Callback to track if phone number is valid                   |
+| `countrySelectorLabel` | `string`                  | Accessible label for the country selector                    |
+| `noResultsText`    | `string`                       | Empty-state text for country search                          |
+| `flagMode`         | `"cdn" \| "emoji" \| "none"` | Built-in flag rendering strategy                         |
+| `renderFlag`       | `(country, context) => ReactNode` | Overrides built-in flag rendering                         |
+| `virtualizeThreshold` | `number`                    | Number of results after which list virtualization starts     |
+
+Native input attributes such as `name`, `required`, `disabled`, `onBlur`,
+`autoComplete`, and `aria-*` are forwarded to the telephone input.
+
+Use `flagMode="emoji"` for a fully offline flag display, or `flagMode="none"`
+when flags are not needed. `renderFlag` can render a local SVG, icon component,
+or any other React node.
 
 ---
 
@@ -171,6 +199,8 @@ Static JSON translations for:
 - French (`fr`)
 - Spanish (`es`)
 
+Other locales use `Intl.DisplayNames` when the runtime supports them.
+
 ---
 
 ## 🛆 License
@@ -181,6 +211,6 @@ MIT
 
 ## 🔗 Live Demo
 
-Check out the live demo: [react-phonebox demo](https://react-phonebox-demo.vercel.app)
+Check out the live demo: [react-phonebox demo](https://frkngnc.github.io/react-phonebox/demo)
 
-> Developed with by [frkngnc](https://github.com/frkngnc)
+> Developed by [frkngnc](https://github.com/frkngnc)

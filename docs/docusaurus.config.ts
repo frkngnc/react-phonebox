@@ -1,6 +1,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import path from "node:path";
 
 const config: Config = {
   title: "React PhoneBox",
@@ -40,6 +41,24 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    function reactPhoneBoxDemoAliases() {
+      return {
+        name: "react-phonebox-demo-aliases",
+        configureWebpack() {
+          return {
+            resolve: {
+              alias: {
+                react: path.resolve(__dirname, "node_modules/react"),
+                "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+              },
+            },
+          };
+        },
+      };
+    },
+  ],
+
   themeConfig: {
     colorMode: {
       defaultMode: "dark",
@@ -56,7 +75,11 @@ const config: Config = {
           position: "left",
           label: "Docs",
         },
-
+        {
+          to: "/demo",
+          label: "Demo",
+          position: "left",
+        },
         {
           href: "https://github.com/frkngnc/react-phonebox",
           label: "GitHub",
@@ -66,7 +89,7 @@ const config: Config = {
     },
     footer: {
       style: "dark",
-      copyright: `Copyright © ${new Date().getFullYear()} React PhoneBox, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} React PhoneBox. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

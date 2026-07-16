@@ -1,23 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { PhoneBoxInput } from "./PhoneBoxInput";
-import { useFormatter } from "../hooks/useFormatter";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { PhoneBoxInput, PhoneBoxInputProps } from "./PhoneBoxInput";
 import { useExampleNumber } from "../hooks/useExampleNumber";
-import { useMobileOnly } from "../hooks/useMobileOnly";
 import { Country } from "../utils/loadCountries";
 import { getCountryCallingCode, CountryCode } from "libphonenumber-js";
+import { getPhoneNumberState } from "../utils/phoneNumber";
 import "../styles/PhoneBox.css";
 
-type PhoneBoxProps = {
-  value: string;
-  onChange: (value: string) => void;
-  locale?: string;
-  initialCountry?: string;
-  theme?: "dark" | "light";
-  searchPlaceholder?: string;
+export type PhoneBoxProps = Omit<
+  PhoneBoxInputProps,
+  "onCountryChange" | "placeholder"
+> & {
   mobileOnly?: boolean;
   onRawChange?: (raw: string) => void;
   onValidChange?: (isValid: boolean) => void;
 };
+
+function createCountry(iso2?: string): Country | null {
+  if (!iso2) return null;
+
+  try {
+    const iso = iso2.toUpperCase();
+    const dialCode = "+" + getCountryCallingCode(iso as CountryCode);
+    return { iso2: iso, dialCode, name: iso };
+  } catch {
+    console.warn("Invalid initialCountry code");
+    return null;
+  }
+}
 
 export const PhoneBox: React.FC<PhoneBoxProps> = ({
   value,
@@ -29,42 +38,39 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
   mobileOnly = false,
   onRawChange,
   onValidChange,
+  ...inputProps
 }) => {
-  const [country, setCountry] = useState<Country | null>(null);
+  const [country, setCountry] = useState<Country | null>(() =>
+    createCountry(initialCountry)
+  );
+  const { placeholder } = useExampleNumber(country?.iso2);
+  const phoneNumber = useMemo(
+    () => getPhoneNumberState(value, country?.iso2, mobileOnly),
+    [country?.iso2, mobileOnly, value]
+  );
 
   useEffect(() => {
-    if (country || !initialCountry) return;
-
-    try {
-      const iso = initialCountry.toUpperCase();
-      const dial = "+" + getCountryCallingCode(iso as CountryCode);
-      setCountry({ iso2: iso, dialCode: dial, name: iso });
-    } catch {
-      console.warn("Invalid initialCountry code");
-    }
-  }, [initialCountry, country]);
-
-  const { format } = useFormatter(country?.iso2);
-  const { placeholder, maxDigits } = useExampleNumber(country?.iso2);
-  const { validate } = useMobileOnly();
-
-  const digits = value.replace(/\D/g, "").slice(0, maxDigits ?? 15);
-  const formatted = format(digits);
-  const raw = (country?.dialCode ?? "") + digits;
-  const validation = validate(raw, mobileOnly);
+    onRawChange?.(phoneNumber.raw);
+  }, [onRawChange, phoneNumber.raw]);
 
   useEffect(() => {
-    onRawChange?.(raw);
-  }, [raw]);
+    onValidChange?.(phoneNumber.isValid);
+  }, [onValidChange, phoneNumber.isValid]);
 
-  useEffect(() => {
-    onValidChange?.(validation.isValid);
-  }, [validation.isValid]);
+  const handleChange = useCallback(
+    (nextValue: string) => {
+      onChange(
+        getPhoneNumberState(nextValue, country?.iso2, mobileOnly).formatted
+      );
+    },
+    [country?.iso2, mobileOnly, onChange]
+  );
 
   return (
     <PhoneBoxInput
-      value={formatted}
-      onChange={onChange}
+      {...inputProps}
+      value={phoneNumber.formatted}
+      onChange={handleChange}
       onCountryChange={setCountry}
       locale={locale}
       initialCountry={initialCountry}
