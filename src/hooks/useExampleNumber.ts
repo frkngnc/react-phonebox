@@ -22,7 +22,9 @@ export function useExampleNumber(iso2?: string, mask?: string) {
     return nationalFormat;
   }, [example, mask]);
 
-  const maxDigits = example?.nationalNumber?.length ?? 15;
+  const maxDigits = example
+    ? example.formatNational().replace(/\D/g, "").length
+    : 15;
 
   return { example, placeholder, maxDigits };
 }

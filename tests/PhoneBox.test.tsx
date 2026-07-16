@@ -24,6 +24,34 @@ describe("PhoneBox", () => {
     expect(onChange).toHaveBeenLastCalledWith("0532 123 45 67");
   });
 
+  it("limits national input to the selected country format", () => {
+    const onChange = vi.fn();
+
+    render(
+      <PhoneBox value="" onChange={onChange} initialCountry="TR" />
+    );
+
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "0532123456789" },
+    });
+
+    expect(onChange).toHaveBeenLastCalledWith("0532 123 45 67");
+  });
+
+  it("limits international input without counting the national trunk prefix", () => {
+    const onChange = vi.fn();
+
+    render(
+      <PhoneBox value="" onChange={onChange} initialCountry="TR" />
+    );
+
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "+90532123456789" },
+    });
+
+    expect(onChange).toHaveBeenLastCalledWith("+90 532 123 45 67");
+  });
+
   it("emits a valid E.164 value for a Turkish national number", async () => {
     const onRawChange = vi.fn();
     const onValidChange = vi.fn();

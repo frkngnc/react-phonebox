@@ -36,8 +36,8 @@ const { placeholder, example, maxDigits } = useExampleNumber('US');
 ### Returns:
 - `placeholder` - Example-based national format string (e.g. `201-555-0123`)
 - `example` - Example number object with formatting methods
-- `maxDigits` - Digit count of the example number. This is informational and
-  should not be used as a hard input limit because valid number lengths can vary.
+- `maxDigits` - Maximum national input length for the example format, including
+  a national trunk prefix when the selected country uses one.
 
 ---
 

@@ -28,6 +28,34 @@ function createCountry(iso2?: string): Country | null {
   }
 }
 
+function limitPhoneInput(
+  value: string,
+  country: Country | null,
+  example: ReturnType<typeof useExampleNumber>["example"]
+): string {
+  const trimmed = value.trimStart();
+  const hasInternationalPrefix = trimmed.startsWith("+");
+  const digits = trimmed.replace(/\D/g, "");
+
+  if (!example) {
+    return `${hasInternationalPrefix ? "+" : ""}${digits.slice(0, 15)}`;
+  }
+
+  const significantDigits = example.nationalNumber.replace(/\D/g, "");
+  const formattedNationalDigits = example.formatNational().replace(/\D/g, "");
+  const nationalPrefix = formattedNationalDigits.endsWith(significantDigits)
+    ? formattedNationalDigits.slice(0, -significantDigits.length)
+    : "";
+  const dialCodeDigits = country?.dialCode.replace(/\D/g, "") ?? "";
+  const maxDigits = hasInternationalPrefix
+    ? dialCodeDigits.length + significantDigits.length
+    : nationalPrefix && digits.startsWith(nationalPrefix)
+      ? formattedNationalDigits.length
+      : significantDigits.length;
+
+  return `${hasInternationalPrefix ? "+" : ""}${digits.slice(0, maxDigits)}`;
+}
+
 export const PhoneBox: React.FC<PhoneBoxProps> = ({
   value,
   onChange,
@@ -43,10 +71,14 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
   const [country, setCountry] = useState<Country | null>(() =>
     createCountry(initialCountry)
   );
-  const { placeholder } = useExampleNumber(country?.iso2);
+  const { placeholder, example } = useExampleNumber(country?.iso2);
+  const limitedValue = useMemo(
+    () => limitPhoneInput(value, country, example),
+    [country, example, value]
+  );
   const phoneNumber = useMemo(
-    () => getPhoneNumberState(value, country?.iso2, mobileOnly),
-    [country?.iso2, mobileOnly, value]
+    () => getPhoneNumberState(limitedValue, country?.iso2, mobileOnly),
+    [country?.iso2, limitedValue, mobileOnly]
   );
 
   useEffect(() => {
@@ -60,10 +92,14 @@ export const PhoneBox: React.FC<PhoneBoxProps> = ({
   const handleChange = useCallback(
     (nextValue: string) => {
       onChange(
-        getPhoneNumberState(nextValue, country?.iso2, mobileOnly).formatted
+        getPhoneNumberState(
+          limitPhoneInput(nextValue, country, example),
+          country?.iso2,
+          mobileOnly
+        ).formatted
       );
     },
-    [country?.iso2, mobileOnly, onChange]
+    [country, example, mobileOnly, onChange]
   );
 
   return (

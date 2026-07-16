@@ -23,9 +23,10 @@
 ### Fixed
 - Parse national numbers with their selected country before producing E.164 output.
 - Preserve national trunk prefixes such as `0` without duplicating them after the country code.
-- Stop truncating input based on the example phone number length.
+- Limit input to the selected country's example format while accounting for national trunk prefixes and international dial codes.
 - Support Unicode country-name search and `00` international dialing-prefix queries.
 - Keep country selection synchronized when `initialCountry` changes.
+- Remove the heavy focus outline from the telephone and country-search text fields.
 
 ## [2.0.0] - 2025-07-07
 

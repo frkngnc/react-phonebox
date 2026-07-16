@@ -58,11 +58,15 @@
 }
 
 .phonebox-select:focus-visible,
-.phonebox-field:focus-visible,
-.phonebox-search:focus-visible,
 .phonebox-option:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: -2px;
+}
+
+.phonebox-field:focus,
+.phonebox-search:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .phonebox-select:disabled,
